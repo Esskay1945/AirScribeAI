@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Writer | Hand Gesture Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+    <!-- MediaPipe Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Start Overlay -->
+        <div id="start-overlay" class="start-overlay">
+            <div class="start-content">
+                <h2>Air Writer</h2>
+                <p>Click start to enable camera access for hand tracking.</p>
+                <button id="start-btn" class="start-btn">Start Camera</button>
+            </div>
+        </div>
+        <!-- Dashboard / UI Panel -->
+        <div class="glass-panel main-panel">
+            <header>
+                <h1>Air Writer</h1>
+                <p class="subtitle">Hand-Tracked Virtual Canvas</p>
+            </header>
+
+            <div class="status-section">
+                <div class="status-item">
+                    <span class="label">Status:</span>
+                    <span id="detection-status" class="value status-inactive">Waiting for camera...</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Gesture:</span>
+                    <span id="gesture-detected" class="value">None</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <span class="group-label">Brush Color</span>
+                    <div class="color-picker">
+                        <div class="color-btn active" data-color="#ff3e3e" style="background: #ff3e3e;"></div>
+                        <div class="color-btn" data-color="#3eff84" style="background: #3eff84;"></div>
+                        <div class="color-btn" data-color="#3e84ff" style="background: #3e84ff;"></div>
+                        <div class="color-btn" data-color="#ffcc3e" style="background: #ffcc3e;"></div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <span class="group-label">Brush Size</span>
+                    <input type="range" id="brush-size" min="2" max="20" value="8" class="slider">
+                </div>
+
+                <div class="action-buttons">
+                    <button id="clear-btn" class="secondary-btn">Clear Canvas</button>
+                    <button id="download-btn" class="primary-btn">Download Art</button>
+                </div>
+            </div>
+
+            <div class="gallery-section">
+                <span class="group-label">Saved Strokes</span>
+                <div id="snapshot-gallery" class="snapshot-gallery">
+                    <!-- Snapshots will be added here -->
+                    <p class="empty-msg">Release pinch to save</p>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h3>Quick Guide</h3>
+                <ul>
+                    <li><strong>Extend Index Finger:</strong> Start Writing</li>
+                    <li><strong>Open Palm:</strong> Clear Canvas</li>
+                    <li><strong>Look at Camera:</strong> Stay centered</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Video & Canvas Area -->
+        <div class="visualization-area">
+            <video id="input-video" class="input-video" playsinline></video>
+            <canvas id="output-canvas" class="output-canvas"></canvas>
+            <canvas id="writing-canvas" class="writing-canvas"></canvas>
+
+
+            <div id="flash-effect" class="flash-effect"></div>
+        </div>
+
+        <!-- FPS Counter -->
+        <div class="fps-counter glass-panel">
+            FPS: <span id="fps-val">0</span>
+        </div>
+    </div>
+
+    <!-- Core App Logic -->
+    <script src="script.js"></script>
+</body>
+
+</html>
