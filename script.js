@@ -279,7 +279,6 @@ async function initApp() {
     statusText.innerText = "Initializing hands...";
 
     try {
-        // Wait for hands to be ready implicitly or explicitly
         statusText.innerText = "Starting camera...";
         await camera.start();
         statusText.innerText = "Camera Active";
@@ -290,21 +289,28 @@ async function initApp() {
         statusText.className = "value status-inactive";
 
         // Fallback for browsers requiring a gesture
-        const fallbackBtn = document.createElement('button');
-        fallbackBtn.innerText = "Enable Camera";
-        fallbackBtn.className = "primary-btn";
-        fallbackBtn.style.marginTop = "10px";
-        fallbackBtn.onclick = async () => {
-            try {
-                await camera.start();
-                fallbackBtn.remove();
-                statusText.innerText = "Camera Active";
-                statusText.className = "value status-active";
-            } catch (err) {
-                alert("Please allow camera access in your browser settings.");
-            }
-        };
-        statusText.parentElement.appendChild(fallbackBtn);
+        if (!document.getElementById('manual-start-btn')) {
+            const fallbackBtn = document.createElement('button');
+            fallbackBtn.id = 'manual-start-btn';
+            fallbackBtn.innerText = "Enable Camera";
+            fallbackBtn.className = "primary-btn";
+            fallbackBtn.style.marginTop = "15px";
+            fallbackBtn.style.width = "100%";
+
+            fallbackBtn.onclick = async () => {
+                try {
+                    statusText.innerText = "Requesting access...";
+                    await camera.start();
+                    fallbackBtn.remove();
+                    statusText.innerText = "Camera Active";
+                    statusText.className = "value status-active";
+                } catch (err) {
+                    console.error("Manual camera start failed:", err);
+                    alert("Camera failed: " + err.message + "\n\nPlease ensure your browser allows camera access for this site.");
+                }
+            };
+            document.querySelector('.status-section').appendChild(fallbackBtn);
+        }
     }
 }
 
